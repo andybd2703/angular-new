@@ -1,0 +1,28 @@
+<h2>CRUD de Usuarios</h2>
+
+<input [(ngModel)]="nuevoUsuario.id" placeholder="ID">
+<input [(ngModel)]="nuevoUsuario.nombre" placeholder="Nombre">
+<input [(ngModel)]="nuevoUsuario.correo" placeholder="Correo">
+
+<button (click)="agregar()">Agregar</button>
+
+<hr>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Acciones</th>
+    </tr>
+
+    <tr *ngFor="let usuario of usuarios">
+        <td>{{usuario.id}}</td>
+        <td>{{usuario.nombre}}</td>
+        <td>{{usuario.correo}}</td>
+        <td>
+            <button (click)="eliminar(usuario.id)">Eliminar</button>
+        </td>
+    </tr>
+
+</table>

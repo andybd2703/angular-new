@@ -8,18 +8,48 @@ interface Usuario { id: number; nombre: string; correo: string; }
   standalone: true,
   selector: 'app-usuarios',
   imports: [CommonModule, FormsModule],
-  templateUrl: './usuarios.html'
+  templateUrl: './usuarios.html',
+  styleUrls: ['./usuarios.css']
 })
 export class UsuariosComponent {
   usuarios: Usuario[] = [];
-  nuevoUsuario: Usuario = { id: 0, nombre: '', correo: '' };
+  private nextId = 1;                    // counter for automatic IDs
+  editingUsuario: Usuario | null = null; // currently edited user
+
+  // form model doesn't carry the id; we set it ourselves
+  nuevoUsuario: Omit<Usuario,'id'> = { nombre: '', correo: '' };
 
   agregar(): void {
-    this.usuarios.push({ ...this.nuevoUsuario });
-    this.nuevoUsuario = { id: 0, nombre: '', correo: '' };
+    if (this.editingUsuario) {
+      // update existing user
+      const idx = this.usuarios.findIndex(u => u.id === this.editingUsuario!.id);
+      if (idx > -1) {
+        this.usuarios[idx] = { ...this.nuevoUsuario, id: this.editingUsuario.id };
+      }
+      this.editingUsuario = null;
+    } else {
+      // create new user with auto‑generated id
+      this.usuarios.push({ ...this.nuevoUsuario, id: this.nextId++ });
+    }
+    // reset form
+    this.nuevoUsuario = { nombre: '', correo: '' };
   }
 
   eliminar(id: number): void {
     this.usuarios = this.usuarios.filter(u => u.id !== id);
+    // if we were editing this user, cancel edit
+    if (this.editingUsuario?.id === id) {
+      this.cancelEdit();
+    }
+  }
+
+  startEdit(usuario: Usuario): void {
+    this.editingUsuario = { ...usuario };
+    this.nuevoUsuario = { nombre: usuario.nombre, correo: usuario.correo };
+  }
+
+  cancelEdit(): void {
+    this.editingUsuario = null;
+    this.nuevoUsuario = { nombre: '', correo: '' };
   }
 }

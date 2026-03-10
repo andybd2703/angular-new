@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 interface Usuario { id: number; nombre: string; correo: string; }
 
 @Component({
+  standalone: true,
   selector: 'app-usuarios',
+  imports: [FormsModule],
   templateUrl: './usuarios.html'
 })
 export class UsuariosComponent {
